@@ -226,7 +226,7 @@ function authenticateEZProxy($uid, $password, $validmsg = '+VALID', $getGroup = 
 	}
 	else {
 		ob_clean();
-		header("Content-type: text/plain");
+		header('Content-type: text/plain');
 	}
 
 	if ($authentic) {
