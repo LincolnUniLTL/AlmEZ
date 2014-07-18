@@ -181,7 +181,7 @@ class User {
 
 		$dom = new DOMDocument('1.0', 'utf8');
 		$dom->loadXML($xml);
-		$error = ( strtolower($dom->getElementsByTagName('errorsExist')->item(0)->nodeValue) === 'true' );
+		$error = ( strtolower($dom->getElementsByTagName('errorsExist')->item(0)->nodeValue) == 'true' );
 
 		if ($error) {
 			// TODO
