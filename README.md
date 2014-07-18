@@ -29,7 +29,7 @@ Accounts to set up:
 
 ### Configuration and testing
 
-Rename and configure _config.EXAMPLE.php_ to _config.php_.
+Rename _[config.EXAMPLE.php](config.EXAMPLE.php)_ to _config.php_ and configure.
 
 \_DEBUG\_, \_VERBOSE\_
 
@@ -66,5 +66,5 @@ Thanks are due to:
 
 Could not have pieced this solution together without being able to examine code generously shared on Github:
 
-* [David Bass from Western Washington University](https://github.com/davidbasswwu) provided [SummitVisitingPatron](https://github.com/davidbasswwu/SummitVisitingPatron) (SVP), took some time to document his far more involved solution, and patiently answered questions privately and on the Alma listserv.
+* [David Bass from Western Washington University](https://github.com/davidbasswwu) provided [SummitVisitingPatron](https://github.com/davidbasswwu/SummitVisitingPatron) (SVP), took some time to document his far more involved solution, and patiently answered questions privately and on the [Alma listserv](https://listserv.nd.edu/cgi-bin/wa?A0=ALMA-L).
 * [Steve Thomas](https://github.com/spotrick) from The University of Adelaide Library, whose Perl solution [AlmaAUTH](https://github.com/spotrick/AlmaAUTH) provided a number of pointers to a simpler implementation for a simpler environment.
