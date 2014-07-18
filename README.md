@@ -17,7 +17,7 @@ Just PHP on your server and these libraries:
 * [XML/DOM](http://php.net/manual/en/book.dom.php)
 * [SOAP](http://php.net/manual/en/book.soap.php)
 
-> You could extend this script to handle LDAP authentication as well if needed, though EZProxy also does that and seems to be well documented nd proven. If you did that, you'd need [PHP's LDAP libraries](http://php.net/manual/en/book.ldap.php).
+> You could extend this script to handle LDAP authentication as well if needed, though EZProxy also does that and seems to be well documented and proven. If you did that, you'd need [PHP's LDAP libraries](http://php.net/manual/en/book.ldap.php).
 
 ## Installation and Setup
 
