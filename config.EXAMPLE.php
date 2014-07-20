@@ -16,8 +16,8 @@ $testParams = array(
 $account = array(
 	'user' => '**accountuser**', // this user must have permission to make API calls, see ExL Developer Network
 	'password' => '*********',
-	'institution' => '**INST**', // pattern seems to be something like 'dd_NAME_INST
-	'hub' => '**ap**', // the Alma regional data centre or Hub initials, others @7/2014 are 'eu' and 'na'
+	'institution' => '**INST**', // pattern seems to be something like 'nn_NAME_INST', INST being literal
+	'hub' => '**ap**', // the Alma regional data centre or Hub code, others @7/2014 are 'eu' and 'na'
 	# 'key' => '***********************************', // prod API key, refer ExL Developer Network
 	'key' => '***********************************', // Guest sandbox (dev) API key, we comment out as needed for testing/prod
 	);

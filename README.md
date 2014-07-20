@@ -2,9 +2,11 @@
 
 #AlmEZ
 
-A way to authenticate "external" patrons with [EZProxy](http://www.oclc.org/support/services/ezproxy.en.html) using [Alma](https://developers.exlibrisgroup.com/alma).
+A way to authenticate and authorise "external" patrons with [EZProxy](http://www.oclc.org/support/services/ezproxy.en.html) using [Alma](https://developers.exlibrisgroup.com/alma).
 
 _I like to pronounce it like a Mexican town, but just so you have options I capitalised_ EZ.
+
+Currently it works as advertised for us. However, I would say its ability to handle errors is undeveloped.
 
 ## How it works
 * http://www.oclc.org/support/services/ezproxy/documentation/usr/external.en.html
@@ -42,6 +44,10 @@ A stanza like this in EZProxy user.txt:
     # External PHP script for authentication through Alma, returns group as well
     # NB: EZProxy doesn't like or honour HTTP redirects, so watch for your configuration and trailing slashes etc, test with curl or similar
     ::auth=almez,external=http://library.example.edu/auth/,post=user=^u&pass=^p
+
+Or using a custom valid message:
+
+    ::auth=almez,external=http://library.example.edu/auth/,post=user=^u&pass=^p,valid=+OKEYDOKEY
 
 Set up EZProxy login form and don't forget _loginbu.htm_.
 
