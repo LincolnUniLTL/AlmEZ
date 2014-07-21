@@ -51,7 +51,7 @@ Or using a custom valid message:
 
 Set up EZProxy login form and don't forget _loginbu.htm_.
 
-Possible to start with a hidden EZProxy form if you don't have a test instance of EZProxy.
+Possible to start with a hidden EZProxy form if you don't have a test instance of EZProxy. You can also add a second instance (e.g. auth2), add that in user.txt and add a hidden form using it, for ongoing development and testing.
 
 [Useful template for multiple login methods](https://gist.github.com/LincolnUniLTL/d19700b8be66d4f1ad6d).
 
