@@ -2,7 +2,7 @@
 // Model configuration/settings file.
 // Edit values here and then rename the file to config.php in the same directory
 
-define('_DEBUG_', TRUE);
+define('_DEBUG_', TRUE); // when TRUE and calling through EZProxy, this may cause failures, depending on user.txt stanza and $testParamas['validmsg'] below
 define('_VERBOSE_', FALSE);
 
 // these parameters will be used if HTTP POST vars are not sent (i.e. for standalone testing)
@@ -16,8 +16,8 @@ $testParams = array(
 $account = array(
 	'user' => '**accountuser**', // this user must have permission to make API calls, see ExL Developer Network
 	'password' => '*********',
-	'institution' => '**INST**', // pattern seems to be something like 'dd_NAME_INST
-	'hub' => '**ap**', // the Alma regional data centre or Hub initials, others @7/2014 are 'eu' and 'na'
+	'institution' => '**INST**', // pattern seems to be something like 'nn_NAME_INST', INST being literal
+	'hub' => '**ap**', // the Alma regional data centre or hub code, others @7/2014 are 'eu' and 'na'
 	# 'key' => '***********************************', // prod API key, refer ExL Developer Network
 	'key' => '***********************************', // Guest sandbox (dev) API key, we comment out as needed for testing/prod
 	);
