@@ -4,7 +4,7 @@ define('ALMA_USER_AUTH', 'alma_legacy');
 define('ALMA_USERS', 'alma');
 
 define('_APP_NAME_','Almez');
-define('_APP_VERSION_','1.0-alpha1-20140718');
+define('_APP_VERSION_','1.0-alpha1-20140721');
 
 $USER_AGENT_STRING = sprintf('%s/%s', _APP_NAME_,  _APP_VERSION_); // one could override this in config.php if required, or even unset it and it won't be sent
 
@@ -60,8 +60,9 @@ class RESTService extends Service {
 
 	// Essentially calls an operation but returns HttpMessage; see self::call() for its response body
 	function invoke($operation, $parameters, $options=array()) {
-		$url = $this->makeURL($operation, $parameters, $options);
-		$request = new HttpRequest($url, $this->provider['operations'][$operation]['method']);
+		$opDetails = $this->provider['operations'][$operation];
+		$url = $this->makeURL($operation, $parameters, ( $options += $opDetails['parameters'] ));
+		$request = new HttpRequest($url, $opDetails['method']);
 		if (isset($GLOBALS['USER_AGENT_STRING'])) {
 			$request->setHeaders(array('User-Agent' => $GLOBALS['USER_AGENT_STRING']) );
 		}
@@ -174,10 +175,7 @@ class User {
 	function getGroup() {
 		$client = new RESTService(ALMA_USERS, $this->catalogue);
 
-		// FIXME: fudge to get something I can parse while I wait for REST authentication issues on Prod (Case #00089712)
-		# $this->uid='NivA';
-
-		$xml = $client->call('Get user details', array('user_id' => $this->uid), array('view'=>'brief'));
+		$xml = $client->call('Get user details', array('user_id' => $this->uid));
 
 		$dom = new DOMDocument('1.0', 'utf8');
 		$dom->loadXML($xml);
