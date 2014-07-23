@@ -9,10 +9,28 @@ _I like to pronounce it like a Mexican town, but just so you have options I capi
 Currently it works as advertised for us. However, I would say its ability to handle errors is undeveloped.
 
 ## How it works
-* http://www.oclc.org/support/services/ezproxy/documentation/usr/external.en.html
-* https://developers.exlibrisgroup.com/alma/apis
+
+The script is invoked as an [external script](http://www.oclc.org/support/services/ezproxy/documentation/usr/external.en.html) by EZproxy. EZproxy's login form provides:
+
+* the authentication method identifier (hidden input element used by _user.txt_)
+* the username field (posted to the script by EZproxy as _^u_)
+* the password field (posted to the script by EZproxy as _^p_)
+
+Its role is to return plain text output to EZproxy via HTTP like this:
+
+    +VALID
+    ezproxy_group=General+Legal
+
+The script determines both the validity of the user's supplied credentials (authentication) and the EZproxy group membership information (authorisation) using [Alma Web Service APIs](https://developers.exlibrisgroup.com/alma/apis).
+
+Users are *authenticated* using credentials supplied by the user with the ["Authentication Information" service](https://developers.exlibrisgroup.com/alma/apis/soap/user/authentication). This is a SOAP flavoured web service, to be migrated to REST by end of 2015.
+
+*Authorisation* is determined using another Alma web service API, ["Get user details"](https://developers.exlibrisgroup.com/alma/apis/users/GET/gwPcGly021r0XQMGAttqcPPFoLNxBoEZSZhrICr+9So=/0aa8d36f-53d6-48ff-8996-485b90b103e4). This is a RESTful web service.
+
+The script returns no response body on failure to authenticate, which seems to be sufficient for EZproxy to fail the login. If no groups are matched for the user, the second line is simply "ezproxy_group=" rather than nothing. This seems to prevent EZproxy from allowing full access rights, though it is not specifically documented by OCLC.
 
 ## Requirements
+
 Just PHP on your server and these libraries:
 
 * [HTTP](http://php.net/manual/en/book.http.php)
