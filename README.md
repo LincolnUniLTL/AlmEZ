@@ -23,11 +23,11 @@ Its role is to return plain text output to EZproxy via HTTP like this:
 
 The script determines both the validity of the user's supplied credentials (authentication) and the EZproxy group membership information (authorisation) using [Alma Web Service APIs](https://developers.exlibrisgroup.com/alma/apis).
 
-Users are *authenticated* using credentials supplied by the user with the ["Authentication Information" service](https://developers.exlibrisgroup.com/alma/apis/soap/user/authentication). This is a SOAP flavoured web service, to be migrated to REST by end of 2015.
+Users are **authenticated** using credentials supplied by the user with the ["Authentication Information" service](https://developers.exlibrisgroup.com/alma/apis/soap/user/authentication). This is a SOAP flavoured web service, to be migrated to REST by end of 2015.
 
-*Authorisation* is determined using another Alma web service API, ["Get user details"](https://developers.exlibrisgroup.com/alma/apis/users/GET/gwPcGly021r0XQMGAttqcPPFoLNxBoEZSZhrICr+9So=/0aa8d36f-53d6-48ff-8996-485b90b103e4). This is a RESTful web service.
+**Authorisation** is determined using another Alma web service API, ["Get user details"](https://developers.exlibrisgroup.com/alma/apis/users/GET/gwPcGly021r0XQMGAttqcPPFoLNxBoEZSZhrICr+9So=/0aa8d36f-53d6-48ff-8996-485b90b103e4). This is a RESTful web service.
 
-The script returns no response body on failure to authenticate, which seems to be sufficient for EZproxy to fail the login. If no groups are matched for the user, the second line is simply `ezproxy_group=` rather than nothing. This seems to prevent EZproxy from allowing full access rights, though it is not specifically documented by OCLC.
+The script returns no response body when authentication fails, which seems good enough for EZproxy to fail the login. If no groups are matched for the user, the second line is simply `ezproxy_group=` rather than nothing. This seems to prevent EZproxy from allowing full access rights, though that behaviour is not specifically documented by OCLC.
 
 ## Requirements
 
