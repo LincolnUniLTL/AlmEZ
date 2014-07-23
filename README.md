@@ -27,7 +27,7 @@ Users are *authenticated* using credentials supplied by the user with the ["Auth
 
 *Authorisation* is determined using another Alma web service API, ["Get user details"](https://developers.exlibrisgroup.com/alma/apis/users/GET/gwPcGly021r0XQMGAttqcPPFoLNxBoEZSZhrICr+9So=/0aa8d36f-53d6-48ff-8996-485b90b103e4). This is a RESTful web service.
 
-The script returns no response body on failure to authenticate, which seems to be sufficient for EZproxy to fail the login. If no groups are matched for the user, the second line is simply "ezproxy_group=" rather than nothing. This seems to prevent EZproxy from allowing full access rights, though it is not specifically documented by OCLC.
+The script returns no response body on failure to authenticate, which seems to be sufficient for EZproxy to fail the login. If no groups are matched for the user, the second line is simply `ezproxy_group=` rather than nothing. This seems to prevent EZproxy from allowing full access rights, though it is not specifically documented by OCLC.
 
 ## Requirements
 
