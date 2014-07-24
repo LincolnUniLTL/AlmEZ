@@ -33,13 +33,15 @@ Public web service details are encoded in arrays in [the main script](index.php)
 
 ## Requirements
 
-Just PHP on your server and these libraries:
+You require just PHP on your server and these libraries:
 
 * [HTTP](http://php.net/manual/en/book.http.php)
 * [XML/DOM](http://php.net/manual/en/book.dom.php)
 * [SOAP](http://php.net/manual/en/book.soap.php)
 
 > You could extend this script to handle LDAP authentication as well if needed, though EZproxy also does that and seems to be well documented and proven. If you did that, you'd need [PHP's LDAP libraries](http://php.net/manual/en/book.ldap.php).
+
+You will need to make sure there are no **firewall blockages** for HTTPS traffic between your EZproxy server and the Alma web service hosts.
 
 ## Installation and Setup
 
