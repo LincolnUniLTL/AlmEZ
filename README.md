@@ -29,7 +29,7 @@ Users are **authenticated** using credentials supplied by the user with the ["Au
 
 The script returns no response body when authentication fails, which seems good enough for EZproxy to fail the login. If no groups are matched for the user, the second line is simply `ezproxy_group=` rather than nothing. This seems to prevent EZproxy from allowing full access rights, though that behaviour is not specifically documented by OCLC.
 
-Public web service details are encoded in arrays in [the main script](index.php). Site specific configurations including web service credentials and authorisation groups are in _[config.EXAMPLE.php](config.EXAMPLE.php)_.
+Public web service details are encoded in arrays in [the main script](index.php). Site specific configurations including web service credentials and authorisation group mappings are in _[config.EXAMPLE.php](config.EXAMPLE.php)_.
 
 ## Requirements
 
@@ -45,21 +45,32 @@ You will need to make sure there are no **firewall blockages** for HTTPS traffic
 
 ## Installation and Setup
 
-Accounts to set up:
+These accounts must be set up and/or configured to make it all work. You should also perform these steps in your sandbox environment for testing:
 
-* test patron
-* API user (SOAP)
-* API key (REST)
+* **A test patron**: Unless you know the credentials of a community user or external patron, or don't want to use a real user, create one in Alma with the same rights as your other external patrons.
+* **API user (SOAP)**: Create or use an existing administrative Alma user, and give them the "API User Read" role so we can use that account to authenticate external patron accounts.
+
+Then, [log in to the Ex LIbris Developer Network]() as your institution user. To use the RESTful web services, you need to [set up applications and **get API keys** for them](https://developers.exlibrisgroup.com/alma/apis#starting). I recommend you set up one to use in your sandbox for testing, and one against your production environment. You only need a read-only "plan".
+
+Download/unpack the source into a location of your choosing on your web server. If you want to call your script with a nice URL, use a URL rewriter or make sure index.php is registered as a default document name for the directory it sits in.
 
 ### Configuration and testing
 
-Rename _[config.EXAMPLE.php](config.EXAMPLE.php)_ to _config.php_ and configure.
+Rename _[config.EXAMPLE.php](config.EXAMPLE.php)_ to _config.php_ and configure it. The file is commented with hints, but here is some additional explaantory information:
 
-\_DEBUG\_, \_VERBOSE\_
+* `_DEBUG_`: debug mode will use test user parameters, specified in `$testParams` a few lines down, and is most useful for quickly testing the script by URL in a web browser
+* `_VERBOSE_`: this will make the script output more information for debugging purposes, usually depends on `_DEBUG_` also being set on
+* `$testParams` are where you set the test patron details you set up previously, and you can also test a custom valid output message (though why, I don't know)
+* `$account` contains the credentials and other details of your institutional account and application key(s), all of which you set up (above) for both flavours of API usage
+* `$authorisationGroups` encapsulates a mapping between EZproxy authorisation groups and Alma user group codes. Fill it in carefully.
+
+Before bringing EZproxy in, you should be able to **test the script**. First try a web browser. Remember that `_DEBUG_` will need to be set `TRUE` to send the test user settings.
+
+Then, if you want to play with some different parameters, invoke the script with something like _curl_ that allows you to HTTP POST:
 
     $ curl http://library.example.edu/auth/ --data "user=USERNAME&pass=SECRET&valid=WHYYES!"
 
-### Deploying
+### Deploying for EZproxy
 
 A stanza like this in EZproxy user.txt:
 
