@@ -29,7 +29,7 @@ Users are **authenticated** using credentials supplied by the user with the ["Au
 
 The script returns no response body when authentication fails, which seems good enough for EZproxy to fail the login. If no groups are matched for the user, the second line is simply `ezproxy_group=` rather than nothing. This seems to prevent EZproxy from allowing full access rights, though that behaviour is not specifically documented by OCLC.
 
-Public web service details are encoded in arrays in [the main script](index.php). Configurations including web service credentials and authorisation groups are in _[config.EXAMPLE.php](config.EXAMPLE.php)_.
+Public web service details are encoded in arrays in [the main script](index.php). Site specific configurations including web service credentials and authorisation groups are in _[config.EXAMPLE.php](config.EXAMPLE.php)_.
 
 ## Requirements
 
