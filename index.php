@@ -203,10 +203,10 @@ function pretty_dump($obj) {
 	}
 }
 
-function getGroupRights($groupCode, $rightsGroups, $fallback='') {
-	foreach ($rightsGroups as $rights => $groups) {
+function getAuthorisation($groupCode, $authorisationGroups, $fallback='') {
+	foreach ($authorisationGroups as $authorisation => $groups) {
 		if (in_array($groupCode, $groups)) {
-			return $rights;
+			return $authorisation;
 		}
 	}
 
@@ -214,7 +214,7 @@ function getGroupRights($groupCode, $rightsGroups, $fallback='') {
 	return $fallback;
 }
 
-function authenticateEZProxy($uid, $password, $validmsg = '+VALID', $getGroup = TRUE) {
+function authenticateEZProxy($uid, $password, $validmsg = '+VALID', $authorise = TRUE) {
 	$user = new User($uid);
 	$authentic = $user->authenticate($password);
 
@@ -229,11 +229,11 @@ function authenticateEZProxy($uid, $password, $validmsg = '+VALID', $getGroup = 
 
 	if ($authentic) {
 		echo "$validmsg\n";
-		if ($getGroup) {
+		if ($authorise) {
 			$group = $user->getGroup();
 			if (!is_null($group)) {
-				$rights = getGroupRights($group, $GLOBALS['groupMap']);
-				echo "ezproxy_group=$rights"; // NB: This line is unconditionally output. This is better even when the line output is the fallback/dummy value, because otherwise EZProxy gives the user carte blanche.
+				$authorisation = getAuthorisation($group, $GLOBALS['authorisationGroups']);
+				echo "ezproxy_group=$authorisation"; // NB: This line is unconditionally output. This is better even when the line output is the fallback/dummy value, because otherwise EZProxy gives the user carte blanche.
 			}
 		}
 	}

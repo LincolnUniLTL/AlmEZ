@@ -22,7 +22,7 @@ $account = array(
 	'key' => '***********************************', // Guest sandbox (dev) API key, we comment out as needed for testing/prod
 	);
 
-$groupMap = array(
+$authorisationGroups = array(
 	'Everyone+Restricted+Alumni+Auto' => array('RS', 'UG', 'PG', 'TEMP', 'DIS', 'STAFF', 'SC', 'CS', 'CR', 'HON', 'TEL'),
 	'Everyone+Alumni+Auto' => array('ALUM'),
 	'Everyone+Auto' => array('SP', 'TPU', 'RB', 'TAE', 'UA'),
