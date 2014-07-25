@@ -1,6 +1,7 @@
 ﻿<?php
 // Model configuration/settings file.
 // Edit values here and then rename the file to config.php in the same directory
+// See https://github.com/LincolnUniLTL/AlmEZ/blob/master/README.md → Configuration and testing for more explanation if needed
 
 define('_DEBUG_', TRUE); // when TRUE and calling through EZProxy, this may cause failures, depending on user.txt stanza and $testParamas['validmsg'] below
 define('_VERBOSE_', FALSE);
@@ -22,6 +23,7 @@ $account = array(
 	'key' => '***********************************', // Guest sandbox (dev) API key, we comment out as needed for testing/prod
 	);
 
+// map concatenated EZproxy authorisation group strings with Alma user group codes
 $authorisationGroups = array(
 	'Everyone+Restricted+Alumni+Auto' => array('RS', 'UG', 'PG', 'TEMP', 'DIS', 'STAFF', 'SC', 'CS', 'CR', 'HON', 'TEL'),
 	'Everyone+Alumni+Auto' => array('ALUM'),
