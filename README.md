@@ -1,6 +1,4 @@
-﻿_\[This documentation - not finished yet!\]_
-
-#AlmEZ
+﻿#AlmEZ
 
 A way to authenticate and authorise "external" patrons with [EZproxy](http://www.oclc.org/support/services/ezproxy.en.html) using [Alma](https://developers.exlibrisgroup.com/alma).
 
