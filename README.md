@@ -72,7 +72,9 @@ Then, if you want to play with some different parameters, invoke the script with
 
 ### Deploying for EZproxy
 
-Now you need to tell EZproxy when and how to invoke AlmEZ, and what parameters to send through to it. Do this in EZproxy's user.txt file. Add a stanza like this:
+#### _user.txt_
+
+Now you need to tell EZproxy when and how to invoke AlmEZ, and what parameters to send through to it. Do this in EZproxy's _user.txt_ file. Add a stanza like this:
 
     # External PHP script for authentication through Alma, returns group as well
     # NB: EZproxy doesn't like or honour HTTP redirects, so watch for your configuration and trailing slashes etc, test with curl or similar
@@ -80,7 +82,7 @@ Now you need to tell EZproxy when and how to invoke AlmEZ, and what parameters t
 
 `almez` in this example _must_ match exactly the value of the hidden input element _auth_ in your EZproxy form.
 
-The URL after `external=` will be where you can reach the script that you unpacked on your web server. Take note of the warning about the URL/configuration included in the example. It is better to leave the comment there so that EZproxy administrators don't get caught out.
+The URL after `external=` will be where you can reach the script that you unpacked on your web server. Take note of the warning about the URL/configuration included in the example. It is better to leave the comment there in _user.txt_ so that EZproxy administrators don't get caught out.
 
 The names of the username and password fields after `post=` – `user` and `pass` in the example – _must_ match the EZproxy form input field names exactly.
 
@@ -88,13 +90,54 @@ This example uses a custom valid message if you have some reason for wanting tha
 
     ::auth=almez,external=http://library.example.edu/auth/,post=user=^u&pass=^p,valid=+OKEYDOKEY
 
-Set up EZproxy login form and don't forget _loginbu.htm_.
+> Remember you need to restart EZproxy when you finish editing its configuration files. (A restart is not required after editing login forms though.)
 
-Possible to start with a hidden EZproxy form if you don't have a test instance of EZproxy. You can also add a second instance (e.g. auth2), add that in user.txt and add a hidden form using it, for ongoing development and testing.
+#### Login forms
 
-[Useful template for multiple login methods](https://gist.github.com/LincolnUniLTL/d19700b8be66d4f1ad6d).
+Edit up your EZproxy login forms at the [mandated locations](http://www.oclc.org/support/services/ezproxy/documentation/docs.en.html) of _docs/login.htm_ and _docs/loginbu.htm_.
+
+For Alma auth using this tool, you need forms with these fields:
+
+* **User name**: field name must match that used in _user.txt_ (refer above)
+* **Password**: field name must match that used in _user.txt_ (refer above)
+* **"auth"**: hidden input whose value must match the identifier used in _user.txt_ (refer above)
+
+> If EZproxy uses more than a single login auth method, we developed a [progressively template for users to switch forms](https://gist.github.com/LincolnUniLTL/d19700b8be66d4f1ad6d).
+
+If you want to test your form and your whole configuration in your real EZproxy instance without affecting users, add a hidden form to your login page.
+
+For example:
+
+```HTML
+			<!-- Temporary hidden form for Alma auth testing -->
+			<form style="display:none; background-color: lightyellow;" class="login" id="login2" method="post" action="">
+				<fieldset>
+					<legend>Auth method</legend>
+					<label for="user2">Username:</label>
+					<input id="user2" name="user" type="text" />
+					<label for="pass2">Password:</label>
+					<input id="pass2" name="pass" type="password" />
+				</fieldset>
+				<div>
+					<input type="hidden" name="auth" value="almez" />
+					<input name="submit2" type="submit" value="Login" />
+				</div>
+			</form>
+```
+
+When you want to use your hidden test form, you can display it by using a browser DOM manipulation tool like Firebug or Inspector, or easier still a Javascript bookmarklet.
+
+If you plan on keeping a second development instance of AlmEZ after go-live, you could use this same hidden form technique for that instance, and change the value of auth in _user.txt_ and the hiddden form field to somethig like "almez2" or "almezdev". This allows you to play with settings in safety. Your second instance could even use an API key for your Alma sandbox instead of your production Alma.
 
 ## Troubleshooting
+
+Here are some likely causes of issues you could check:
+
+* firewalled communication between your script location and the Alma server
+* the URL of your script in _user.txt_ - there may be a redirection you don't see in a browser, especially with trailing slashes
+* Alma web services down - let's hope not!
+* authentication to the web service - the API key is wrong (or using the wrong one), or for SOAP, the service-authenticating user has not been assigned the role to use the service
+* form field names do not match parameters specified in _user.txt_
 
 ## Issues
 
