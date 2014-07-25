@@ -52,11 +52,11 @@ These accounts must be set up and/or configured to make it all work. You should 
 
 Then, [log in to the Ex LIbris Developer Network]() as your institution user. To use the RESTful web services, you need to [set up applications and **get API keys** for them](https://developers.exlibrisgroup.com/alma/apis#starting). I recommend you set up one to use in your sandbox for testing, and one against your production environment. You only need a read-only "plan".
 
-Download/unpack the source into a location of your choosing on your web server. If you want to call your script with a nice URL, use a URL rewriter or make sure index.php is registered as a default document name for the directory it sits in.
+Download/unpack the source into a location of your choosing on your web server. If you want to call your script with a nice URL, use a URL rewriter or simply make sure index.php is registered as a default document name for the directory it sits in.
 
 ### Configuration and testing
 
-Rename _[config.EXAMPLE.php](config.EXAMPLE.php)_ to _config.php_ and configure it. The file is commented with hints, but here is some additional explaantory information:
+Rename _[config.EXAMPLE.php](config.EXAMPLE.php)_ to _config.php_ and configure it. The file is commented with hints, but here is some additional explanatory information:
 
 * `_DEBUG_`: debug mode will use test user parameters, specified in `$testParams` a few lines down, and is most useful for quickly testing the script by URL in a web browser
 * `_VERBOSE_`: this will make the script output more information for debugging purposes, usually depends on `_DEBUG_` also being set on
@@ -72,13 +72,19 @@ Then, if you want to play with some different parameters, invoke the script with
 
 ### Deploying for EZproxy
 
-A stanza like this in EZproxy user.txt:
+Now you need to tell EZproxy when and how to invoke AlmEZ, and what parameters to send through to it. Do this in EZproxy's user.txt file. Add a stanza like this:
 
     # External PHP script for authentication through Alma, returns group as well
     # NB: EZproxy doesn't like or honour HTTP redirects, so watch for your configuration and trailing slashes etc, test with curl or similar
     ::auth=almez,external=http://library.example.edu/auth/,post=user=^u&pass=^p
 
-Or using a custom valid message:
+`almez` in this example _must_ match exactly the value of the hidden input element _auth_ in your EZproxy form.
+
+The URL after `external=` will be where you can reach the script that you unpacked on your web server. Take note of the warning about the URL/configuration included in the example. It is better to leave the comment there so that EZproxy administrators don't get caught out.
+
+The names of the username and password fields after `post=` – `user` and `pass` in the example – _must_ match the EZproxy form input field names exactly.
+
+This example uses a custom valid message if you have some reason for wanting that:
 
     ::auth=almez,external=http://library.example.edu/auth/,post=user=^u&pass=^p,valid=+OKEYDOKEY
 
@@ -87,6 +93,8 @@ Set up EZproxy login form and don't forget _loginbu.htm_.
 Possible to start with a hidden EZproxy form if you don't have a test instance of EZproxy. You can also add a second instance (e.g. auth2), add that in user.txt and add a hidden form using it, for ongoing development and testing.
 
 [Useful template for multiple login methods](https://gist.github.com/LincolnUniLTL/d19700b8be66d4f1ad6d).
+
+## Troubleshooting
 
 ## Issues
 
