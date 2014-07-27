@@ -1,4 +1,13 @@
 ﻿<?php
+// ****************************************************************************************
+// Main script used by EZproxy as an external script for guest patron auth through Alma.
+// Source code home at https://github.com/LincolnUniLTL/AlmEZ
+// Documentation at https://github.com/LincolnUniLTL/AlmEZ/blob/master/README.md
+// Copyright (c) 2014 Lincoln University Library, Teaching, and Learning under an MIT
+//   License: see https://github.com/LincolnUniLTL/AlmEZ/blob/master/LICENSE
+// Authored originally by Hugh Barnes, Lincoln University (digitalaccess@lincoln.ac.nz)
+//   - see also Credits in https://github.com/LincolnUniLTL/AlmEZ/blob/master/README.md
+// ****************************************************************************************
 
 define('ALMA_USER_AUTH', 'alma_legacy');
 define('ALMA_USERS', 'alma');
