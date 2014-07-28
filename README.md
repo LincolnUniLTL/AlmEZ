@@ -107,20 +107,20 @@ If you want to test your form and your whole configuration in your real EZproxy 
 For example:
 
 ```HTML
-			<!-- Temporary hidden form for Alma auth testing -->
-			<form style="display:none; background-color: lightyellow;" class="login" id="login2" method="post" action="">
-				<fieldset>
-					<legend>Auth method</legend>
-					<label for="user2">Username:</label>
-					<input id="user2" name="user" type="text" />
-					<label for="pass2">Password:</label>
-					<input id="pass2" name="pass" type="password" />
-				</fieldset>
-				<div>
-					<input type="hidden" name="auth" value="almez" />
-					<input name="submit2" type="submit" value="Login" />
-				</div>
-			</form>
+<!-- Temporary hidden form for Alma auth testing -->
+<form style="display:none; background-color: lightyellow;" class="login" id="login2" method="post" action="">
+	<fieldset>
+		<legend>Auth method</legend>
+		<label for="user2">Username:</label>
+		<input id="user2" name="user" type="text" />
+		<label for="pass2">Password:</label>
+		<input id="pass2" name="pass" type="password" />
+	</fieldset>
+	<div>
+		<input type="hidden" name="auth" value="almez" />
+		<input name="submit2" type="submit" value="Login" />
+	</div>
+</form>
 ```
 
 When you want to use your hidden test form, you can display it by using a browser DOM manipulation tool like Firebug or Inspector, or easier still a Javascript bookmarklet.
