@@ -149,7 +149,6 @@ class SOAPService extends Service {
 	function call($method, $parameters) {
 		$this->client->$method($parameters);
 		return html_entity_decode($this->client->__getLastResponse()); // the decode is required because (strangely) the inner XML response is escaped - Salesforce case lodged, #00089967
-		break;
 	}
 }
 
