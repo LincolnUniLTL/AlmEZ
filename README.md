@@ -100,7 +100,7 @@ For Alma auth using this tool, you need forms with these fields:
 * **Password**: field name must match that used in _user.txt_ (refer above)
 * **"auth"**: hidden input whose value must match the identifier used in _user.txt_ (refer above)
 
-> If EZproxy uses more than a single login auth method, we developed a [progressively template for users to switch forms](https://gist.github.com/LincolnUniLTL/d19700b8be66d4f1ad6d).
+> If EZproxy uses more than a single login auth method, we developed a [progressively enhanced template for users to switch forms](https://gist.github.com/LincolnUniLTL/d19700b8be66d4f1ad6d).
 
 If you want to test your form and your whole configuration in your real EZproxy instance without affecting users, add a hidden form to your login page.
 
@@ -125,7 +125,7 @@ For example:
 
 When you want to use your hidden test form, you can display it by using a browser DOM manipulation tool like Firebug or Inspector, or easier still a Javascript bookmarklet.
 
-If you plan on keeping a second development instance of AlmEZ after go-live, you could use this same hidden form technique for that instance, and change the value of auth in _user.txt_ and the hiddden form field to somethig like "almez2" or "almezdev". This allows you to play with settings in safety. Your second instance could even use an API key for your Alma sandbox instead of your production Alma.
+If you plan on keeping a second development instance of AlmEZ after go-live, you could use this same hidden form technique for that instance, and change the value of auth in _user.txt_ and the hidden form field to something like "almez2" or "almezdev". This allows you to play with settings in safety. Your second instance could even use an API key for your Alma sandbox instead of your production Alma.
 
 ## Troubleshooting
 
