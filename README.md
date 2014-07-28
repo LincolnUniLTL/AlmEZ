@@ -123,7 +123,7 @@ For example:
 </form>
 ```
 
-When you want to use your hidden test form, you can display it by using a browser DOM manipulation tool like Firebug or Inspector, or easier still a Javascript bookmarklet.
+When you want to use your hidden test form, you can display it by using a browser DOM manipulation tool like Firebug or Inspector, or easier still, [we made a bookmarklet](https://gist.github.com/LincolnUniLTL/bccbafc4950a32c9c8ed).
 
 If you plan on keeping a second development instance of AlmEZ after go-live, you could use this same hidden form technique for that instance, and change the value of auth in _user.txt_ and the hidden form field to something like "almez2" or "almezdev". This allows you to play with settings in safety. Your second instance could even use an API key for your Alma sandbox instead of your production Alma.
 
