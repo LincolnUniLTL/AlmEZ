@@ -222,7 +222,7 @@ function getAuthorisation($groupCode, $authorisationGroups, $fallback='') {
 	return $fallback;
 }
 
-function authenticateEZProxy($uid, $password, $validmsg = '+VALID', $authorise = TRUE) {
+function authenticateEZproxy($uid, $password, $validmsg = '+VALID', $authorise = TRUE) {
 	$user = new User($uid);
 	$authentic = $user->authenticate($password);
 
@@ -262,4 +262,4 @@ $authParams = array(
 	);
 pretty_dump($authParams);
 
-authenticateEZProxy($authParams['user'], $authParams['password'], $authParams['validmsg'] );
+authenticateEZproxy($authParams['user'], $authParams['password'], $authParams['validmsg'] );
