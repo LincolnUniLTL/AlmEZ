@@ -6,6 +6,10 @@ _I like to pronounce it like a Mexican town, but just so you have options I capi
 
 Currently it works as advertised for us. However, I would say its ability to handle errors is undeveloped.
 
+## Versions
+1.0-alpha1-20140721 used the old SOAP service for authentication
+1.1-alpha1-20150915 now uses the RESTful service throughout
+
 ## How it works
 
 The script is invoked as an [external script](http://www.oclc.org/support/services/ezproxy/documentation/usr/external.en.html) by EZproxy. EZproxy's login form provides:
@@ -19,11 +23,11 @@ Its role is to return plain text output to EZproxy via HTTP like this:
     +VALID
     ezproxy_group=General+Legal
 
-The script determines both the validity of the user's supplied credentials (authentication) and the EZproxy group membership information (authorisation) using [Alma Web Service APIs](https://developers.exlibrisgroup.com/alma/apis).
+The script determines both the validity of the user's supplied credentials (authentication) and the EZproxy group membership information (authorisation) using [Alma Web Service RESTful APIs](https://developers.exlibrisgroup.com/alma/apis).
 
-Users are **authenticated** using credentials supplied by the user with the ["Authentication Information" service](https://developers.exlibrisgroup.com/alma/apis/soap/user/authentication). This is a SOAP flavoured web service, to be migrated to REST by end of 2015.
+Users are **authenticated** using credentials supplied by the user with the ["Authenticate user" service](https://developers.exlibrisgroup.com/alma/apis/users/POST/gwPcGly021r0XQMGAttqcPPFoLNxBoEZSZhrICr+9So=/0aa8d36f-53d6-48ff-8996-485b90b103e4).
 
-**Authorisation** is determined using another Alma web service API, ["Get user details"](https://developers.exlibrisgroup.com/alma/apis/users/GET/gwPcGly021r0XQMGAttqcPPFoLNxBoEZSZhrICr+9So=/0aa8d36f-53d6-48ff-8996-485b90b103e4). This is a RESTful web service.
+**Authorisation** is determined using the ["Get user details" service](https://developers.exlibrisgroup.com/alma/apis/users/GET/gwPcGly021r0XQMGAttqcPPFoLNxBoEZSZhrICr+9So=/0aa8d36f-53d6-48ff-8996-485b90b103e4).
 
 The script returns no response body when authentication fails, which seems good enough for EZproxy to fail the login. If no groups are matched for the user, the second line is simply `ezproxy_group=` rather than nothing. This seems to prevent EZproxy from allowing full access rights, though that behaviour is not specifically documented by OCLC.
 
@@ -35,7 +39,6 @@ You require just PHP on your server and these libraries:
 
 * [HTTP](http://php.net/manual/en/book.http.php)
 * [XML/DOM](http://php.net/manual/en/book.dom.php)
-* [SOAP](http://php.net/manual/en/book.soap.php)
 
 > You could extend this script to handle LDAP authentication as well if needed, though EZproxy also does that and seems to be well documented and proven. If you did that, you'd need [PHP's LDAP libraries](http://php.net/manual/en/book.ldap.php).
 
@@ -46,9 +49,8 @@ You will need to make sure there are no **firewall blockages** for HTTPS traffic
 These accounts must be set up and/or configured to make it all work. You should also perform these steps in your sandbox environment for testing:
 
 * **A test patron**: Unless you know the credentials of a community user or external patron, or don't want to use a real user, create one in Alma with the same rights as your other external patrons.
-* **API user (SOAP)**: Create or use an existing administrative Alma user, and give them the "API User Read" role so we can use that account to authenticate external patron accounts.
 
-Then, [log in to the Ex LIbris Developer Network]() as your institution user. To use the RESTful web services, you need to [set up applications and **get API keys** for them](https://developers.exlibrisgroup.com/alma/apis#starting). I recommend you set up one to use in your sandbox for testing, and one against your production environment. You only need a read-only "plan".
+Then, [log in to the Ex LIbris Developer Network]() as your institution user. To use the RESTful web services, you need to [set up applications and **get API keys** for them](https://developers.exlibrisgroup.com/alma/apis#starting). I recommend you set up one to use in your sandbox for testing, and one against your production environment. You need a read/write "plan".
 
 Download/unpack the source into a location of your choosing on your web server. If you want to call your script with a nice URL, use a URL rewriter or simply make sure index.php is registered as a default document name for the directory it sits in.
 
@@ -59,7 +61,7 @@ Rename _[config.EXAMPLE.php](config.EXAMPLE.php)_ to _config.php_ and configure 
 * `_DEBUG_`: debug mode will use test user parameters, specified in `$testParams` a few lines down, and is most useful for quickly testing the script by URL in a web browser
 * `_VERBOSE_`: this will make the script output more information for debugging purposes, usually depends on `_DEBUG_` also being set on
 * `$testParams` are where you set the test patron details you set up previously, and you can also test a custom valid output message (though why, I don't know)
-* `$account` contains the credentials and other details of your institutional account and application key(s), all of which you set up (above) for both flavours of API usage
+* `$account` contains details of your institutional account and application key(s), which you set up (above)
 * `$authorisationGroups` encapsulates a mapping between EZproxy authorisation groups and Alma user group codes. Fill it in carefully.
 
 Before bringing EZproxy in, you should be able to **test the script**. First try a web browser. Remember that `_DEBUG_` will need to be set `TRUE` to send the test user settings.
@@ -134,7 +136,7 @@ Here are some likely causes of issues you could check:
 * firewalled communication between your script location and the Alma server
 * the URL of your script in _user.txt_ - there may be a redirection you don't see in a browser, especially with trailing slashes
 * Alma web services down - let's hope not!
-* authentication to the web service - the API key is wrong (or using the wrong one), or for SOAP, the service-authenticating user has not been assigned the role to use the service
+* authentication to the web service - the API key is wrong (or using the wrong one)
 * form field names do not match parameters specified in _user.txt_
 
 ## Issues

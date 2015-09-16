@@ -9,25 +9,16 @@
 //   - see also Credits in https://github.com/LincolnUniLTL/AlmEZ/blob/master/README.md
 // ****************************************************************************************
 
-define('ALMA_USER_AUTH', 'alma_legacy');
 define('ALMA_USERS', 'alma');
 
 define('_APP_NAME_','Almez');
-define('_APP_VERSION_','1.0-alpha1-20140721');
+define('_APP_VERSION_','1.1-alpha1-20150915');
 
 $USER_AGENT_STRING = sprintf('%s/%s', _APP_NAME_,  _APP_VERSION_); // one could override this in config.php if required, or even unset it and it won't be sent
 
 require('config.php');
 
 $SERVICES = array(
-	ALMA_USER_AUTH => array(
-		'style' => Service::STYLE_SOAP,
-		'wsdl' => "https://{$account['hub']}01.alma.exlibrisgroup.com/almaws/repository/UserAuthenticationWebServices?wsdl",
-		'credentials' => array(
-			'login' => "AlmaSDK-{$account['user']}-institutionCode-{$account['institution']}",
-			'password' => $account['password'],
-			),
-		),
 	ALMA_USERS => array(
 		'style' => Service::STYLE_REST,
 		'wadl' => 'https://developers.exlibrisgroup.com/resources/wadl/0aa8d36f-53d6-48ff-8996-485b90b103e4.wadl', // ignored. TODO: this should be about all we need in future to get the other service detail values
@@ -44,6 +35,15 @@ $SERVICES = array(
 					'view' => 'brief',
 					),
 				),
+			'Authenticate user' => array(
+				'template' => '{user_id}',
+				'method' => HTTP_METH_POST,
+				'parameters' => array(
+						'user_id_type' => 'all_unique',
+						'op' => 'auth',
+						'password' => '{password}'
+					), 
+				),
 			),
 		),
 	);
@@ -52,7 +52,6 @@ class Service {
 	public $provider;
 
 	const STYLE_REST = 'REST';
-	const STYLE_SOAP = 'SOAP';
 
 	function __construct($provider, $catalogue, $options=array()) {
 		$this->provider = $catalogue[$provider];
@@ -86,10 +85,18 @@ class RESTService extends Service {
 		}
 	}
 
-	// Wraps self::invoke() and returns its response body (for equivalent functionality to SOAPService)
+	// Wraps self::invoke() and returns its response body
 	function call($operation, $parameters, $options=array()) {
 		$response = $this->invoke($operation, $parameters, $options);
-		return ( is_null($response) ? NULL : $response->getBody());
+		if (is_null($response)) {
+			return NULL;
+		} else {
+			if ($response->getBody() == "") {
+				return $response->getResponseCode();
+			} else {
+				return $response->getBody();
+			}
+		}
 	}
 
 	private function makeURL($operation, $parameters, $options=array()) {
@@ -102,53 +109,10 @@ class RESTService extends Service {
 		// TODO: use headers for API key instead of querystring param
 		foreach (array_merge($this->provider['parameters'], $options ) as $k => $v) {
 			$queryString = ( isset($queryString) ? "$queryString&" : '?' );
-			$queryString .= "$k=$v"; //FIXME: URL encoding here??
+			$queryString .= "$k=" . urlencode(strtr($v, $substitutions));
 		}
 
 		return sprintf('%s/%s/%s%s', $this->provider['endpoint'], $this->provider['path'], $variablePath, $queryString);
-	}
-}
-
-class SOAPService extends Service {
-	public $client;
-	public $provider;
-
-	function __construct($provider, $catalogue, $options=array()) {
-		parent::__construct($provider, $catalogue, $options);
-		$this->client = $this->makeClient($options);
-	}
-
-	private function makeClient($options) {
-		$defaults = array(
-			'exceptions' => TRUE,
-			'cache_wsdl' => WSDL_CACHE_DISK,
-			'login' => $this->provider['credentials']['login'],
-			'password' => $this->provider['credentials']['password'],
-			'keep_alive' => TRUE,
-			);
-		if (isset($GLOBALS['USER_AGENT_STRING'])) {
-			$defaults['user_agent'] = $GLOBALS['USER_AGENT_STRING'];
-		}
-		$requirements = array(
-			'trace' => TRUE, // would break stuff (getting response data) if this were overridden
-			);
-		$options += $defaults;
-		$options = $requirements + $options;
-
-		try {
-			return (new SoapClient($this->provider['wsdl'], $options));
-		}
-		catch (Exception $e) {
-			// this block from https://github.com/davidbasswwu/SummitVisitingPatron/blob/master/alma/visiting-patron/authenticate-user-ticket.php
-			echo "<h2>Exception Error!</h2>"; //FIXME: handle differently (for user and try sending an email to sysadmins)
-			echo $e->getMessage();
-			return NULL;
-		}
-	}
-
-	function call($method, $parameters) {
-		$this->client->$method($parameters);
-		return html_entity_decode($this->client->__getLastResponse()); // the decode is required because (strangely) the inner XML response is escaped - Salesforce case lodged, #00089967
 	}
 }
 
@@ -163,14 +127,15 @@ class User {
 	}
 
 	function authenticate($password) {
-		$client = new SOAPService(ALMA_USER_AUTH, $this->catalogue);
-		$parameters = array(
-			'arg0' => $this->uid,
-			'arg1' => $password,
-			);
-		$result = $client->call('authenticateUser', $parameters );
-		return $this->isAuthenticated($result);
-	}
+		$client = new RESTService(ALMA_USERS, $this->catalogue);
+		$result = $client->call('Authenticate user', array('user_id' => $this->uid, 'op' => 'auth', 'password' => $password));
+		if ($result==204) {
+			return true;
+		} else {
+			// TODO: could do some error handling for testing purposes
+			return false;
+		} 
+	}	
 
 	private function isAuthenticated($xml) {
 		$dom = new DOMDocument('1.0', 'utf8');
@@ -236,10 +201,10 @@ function authenticateEZproxy($uid, $password, $validmsg = '+VALID', $authorise =
 	}
 
 	if ($authentic) {
-		echo "$validmsg\n";
 		if ($authorise) {
 			$group = $user->getGroup();
 			if (!is_null($group)) {
+				echo "$validmsg\n";  // only allows users in if they've authenticated *and* have a group associated with them.
 				$authorisation = getAuthorisation($group, $GLOBALS['authorisationGroups']);
 				echo "ezproxy_group=$authorisation"; // NB: This line is unconditionally output. This is better even when the line output is the fallback/dummy value, because otherwise EZProxy gives the user carte blanche.
 			}
