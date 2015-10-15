@@ -1,10 +1,12 @@
 ﻿<?php
 // Model configuration/settings file.
-// Edit values here and then rename the file to config.php in the same directory
+// Edit values here and then rename the file to index_config.php in the same directory
 // See https://github.com/LincolnUniLTL/AlmEZ/blob/master/README.md → Configuration and testing for more explanation if needed
 
 define('_DEBUG_', TRUE); // when TRUE and calling through EZProxy, this may cause failures, depending on user.txt stanza and $testParamas['validmsg'] below
 define('_VERBOSE_', FALSE);
+
+$cert_fname = ''; // absolute filepath to SSL certificate bundle eg '\path\to\cacert.pem'. If you don't want to maintain and aren't worried about security, leave empty.
 
 // these parameters will be used if HTTP POST vars are not sent (i.e. for standalone testing)
 $testParams = array(

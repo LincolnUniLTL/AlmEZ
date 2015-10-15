@@ -1,29 +1,12 @@
-
+﻿
 ENVIRONMENT
-- PHP 5.3.3
-- PECL HTTP v2.5.1
-- Apache/2.2.15 (Unix)
-- Red Hat Enterprise Linux Server release 6.6 (Santiago)
-- Linux 2.6.32-504.23.4.el6.x86_64 #1 SMP Fri May 29 10:16:43 EDT 2015 x86_64 x86_64 x86_64 GNU/Linux
+- PHP 5.6
+- Windows Server 2012 R2
 
 
 CHANGES RELATIVE TO RELEASE
-  https://github.com/LincolnUniLTL/AlmEZ/tree/73c3ad7749965fee15382a13dd475b7d41ef6bf1
+  https://github.com/LincolnUniLTL/AlmEZ/commit/788d86d8cbff90b398153c9532e4647772109d7a
 
-- Authenticate via Alma REST API (instead of SOAP API).
-- Use PECL HTTP v2 (instead of v1).
-- Allow apikey to appear in either HTTP query string or HTTP header.
-- Only allow User-Agent header to be used for HTTP GET (as it appears to break the 'Authenticate
-  user' POST operation).
-- Allow URL template substitutions to also be made in query string values.
-- URL encode query string values (eg. required if password contains special characters).
-- Cache user detail response (so we can use it multiple times without a new API call for each).
-- Optionally verify IP address of caller (should be the EZproxy IP address).
-- Optionally perform logging (via a thread-safe logger).
-- Created new class AuthenticateEZproxyResponse:
-  * Moved several non-class methods into it.
-  * Method authenticateEZproxy() was moved into this class with new method name doTraditionalAuth().
-  * Added alternative method doCustomAuth() which checks additional user details before providing
-    authentication to EZproxy (eg. that identifier is a barcode; or group and statistic_category match
-    some criteria). This is mostly driven by an array of rules.
-
+- Use cURL (instead of PECL HTTP).
+- Allow optional filepath to an SSL certificate bundle to verify against
+- Allow User-Agent header to be used for HTTP POST as well as GET

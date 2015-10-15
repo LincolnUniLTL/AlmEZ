@@ -11,6 +11,7 @@ Currently it works as advertised for us. However, I would say its ability to han
 * 1.0-alpha1-20140721 uses the old SOAP service for authentication
 * 1.1-alpha1-20150915 uses the RESTful service throughout
 * 2.0-20150923 (based on 1.0) another RESTful implementation; uses HTTP PECL v2; adds new functionality: see release notes
+* 2.1-20151012 (based on 2.0) replaces HTTP PECL with cURL
 
 ## How it works
 
@@ -37,9 +38,8 @@ Public web service details are encoded in arrays in [the main script](index.php)
 
 ## Requirements
 
-You require just PHP on your server and these libraries:
+You require just PHP on your server and this library:
 
-* [HTTP](http://php.net/manual/en/book.http.php) version 2
 * [XML/DOM](http://php.net/manual/en/book.dom.php)
 
 > You could extend this script to handle LDAP authentication as well if needed, though EZproxy also does that and seems to be well documented and proven. If you did that, you'd need [PHP's LDAP libraries](http://php.net/manual/en/book.ldap.php).
@@ -62,9 +62,11 @@ Rename _[config.EXAMPLE.php](config.EXAMPLE.php)_ to _config.php_ and configure 
 
 * `_DEBUG_`: debug mode will use test user parameters, specified in `$testParams` a few lines down, and is most useful for quickly testing the script by URL in a web browser
 * `_VERBOSE_`: this will make the script output more information for debugging purposes, usually depends on `_DEBUG_` also being set on
+* `$cert_fname` is an absolute filepath to an SSL certificate bundle you want to verify against when connecting to the Alma API. If left empty, SSL verification will be skipped.
 * `$testParams` are where you set the test patron details you set up previously, and you can also test a custom valid output message (though why, I don't know)
 * `$account` contains details of your institutional account and application key(s), which you set up (above)
 * `$authorisationGroups` encapsulates a mapping between EZproxy authorisation groups and Alma user group codes. Fill it in carefully.
+$ `$ezproxyConfig` whether you want to verify that the script is being called from EZproxy's IP address, and what that IP address(es) is
 
 Before bringing EZproxy in, you should be able to **test the script**. First try a web browser. Remember that `_DEBUG_` will need to be set `TRUE` to send the test user settings.
 
@@ -155,7 +157,7 @@ Thanks are due to:
 
 * OCLC for pretty good [documentation about EZproxy authentication](http://www.oclc.org/support/services/ezproxy/documentation/usr.en.html)
 * Ex Libris for providing Alma web services, moving them to REST, and for great responsive support
-* Library, Information Services, Flinders University for sharing (this version) 2.0
+* Library, Information Services, Flinders University for sharing version 2.0
 
 Could not have pieced this solution together without being able to examine code generously shared on Github:
 

@@ -5,6 +5,7 @@
 // Documentation at https://github.com/LincolnUniLTL/AlmEZ/blob/master/README.md
 // Copyright (c) 2014 Lincoln University Library, Teaching, and Learning
 // Copyright (c) 2015 Library, Information Services, Flinders University.
+// Copyright (c) 2015 Lincoln University Library, Teaching, and Learning
 // MIT License: see https://github.com/LincolnUniLTL/AlmEZ/blob/master/LICENSE
 // Authored originally by Hugh Barnes, Lincoln University (digitalaccess@lincoln.ac.nz)
 //   - see also Credits in https://github.com/LincolnUniLTL/AlmEZ/blob/master/README.md
@@ -14,7 +15,7 @@ define('ALMA_USER_AUTH', 'alma_legacy');
 define('ALMA_USERS', 'alma');
 
 define('_APP_NAME_','Almez');
-define('_APP_VERSION_','2.0-20150923');
+define('_APP_VERSION_','2.1-20151012');
 
 $USER_AGENT_STRING = sprintf('%s/%s', _APP_NAME_,  _APP_VERSION_); // one could override this in config.php if required, or even unset it and it won't be sent
 
@@ -47,7 +48,7 @@ $SERVICES = array(
 					'view' => 'brief',
 					),
 				'http_headers' => array(
-					"Accept" => "application/xml",
+					"Accept: application/xml",
 					),
 				),
 			// Alma REST API operation
@@ -59,7 +60,7 @@ $SERVICES = array(
 					'password' => '{user_pw}',
 					),
 				'http_headers' => array(
-					"Content-Type" => "application/xml",
+					 "Content-Type: application/xml",
 					),
 				),
 
@@ -75,9 +76,9 @@ class RESTService {
 		$this->provider['name'] = $provider;
 	}
 
-	// Essentially calls an operation but returns http\Client\Response object
+	// Essentially calls an operation but returns API response
 	function invoke($operation, $parameters, $options=array()) {
-		global $account, $USER_AGENT_STRING;
+		global $account, $USER_AGENT_STRING, $cert_fname;
 		$opDetails = $this->provider['operations'][$operation];
 		$url = $this->makeURL($operation, $parameters, ( $options += $opDetails['parameters'] ));
 		pretty_dump($url);
@@ -85,24 +86,37 @@ class RESTService {
 		$headers = isset($opDetails['http_headers']) ? $opDetails['http_headers'] : Array();
 		// Set the apikey in the HTTP header if not set in the URL query string
 		if (!isset($this->provider['parameters']['apikey']))
-			$headers['Authorization'] = "apikey $account[key]";
-		// The User-Agent header breaks the 'Authenticate user' POST operation
-		if (isset($GLOBALS['USER_AGENT_STRING']) && $opDetails['method'] == "GET")
-			$headers['User-Agent'] = $USER_AGENT_STRING;
+			$headers[] = "Authorization: apikey $account[key]";
+		// Set the User-Agent in the HTTP header
+		if (isset($GLOBALS['USER_AGENT_STRING']))
+			$headers[] = "User-Agent: ".$USER_AGENT_STRING;
 		pretty_dump($headers);
 
-		$request = new http\Client\Request($opDetails['method'], $url, $headers);
-		try {
-			$client = new http\Client();
-			$client->enqueue($request)->send();
-			$response = $client->getResponse();
-			return $response; // caller can handle this
+		$post = array();
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $opDetails['method']);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); 
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		if (!$cert_fname) {
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		} else {
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+			curl_setopt($ch, CURLOPT_CAINFO, $cert_fname);
+			pretty_dump('Verifying with SSL certificates in: '.$cert_fname);
 		}
-		catch (http\Exception $e) {
-			echo $e->getMessage();
-			return NULL;
-			// TODO - test and probably handle better
+		$response = curl_exec($ch);
+		if (!$response) {
+			if ($err = curl_error($ch)) {
+				pretty_dump('CURL error: '.$err);
+			} else {
+				$response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			}
 		}
+		curl_close($ch);
+		return $response;
 	}
 
 	private function makeURL($operation, $parameters, $options=array()) {
@@ -142,7 +156,7 @@ class User {
 			)
 		);
 		if ($response == NULL) return FALSE;
-		return ($response->getResponseCode() == 204);		// HTTP 204 = Successful authentication
+		return ($response == 204);		// HTTP 204 = Successful authentication
 	}
 
 	function getUserDetailsResponse() {
@@ -157,7 +171,7 @@ class User {
 	function getGroup() {
 		$response = $this->getUserDetailsResponse();
 		if ($response == NULL) return NULL;
-		$xml = $response->getBody();
+		$xml = $response;
 		pretty_dump("$xml");
 
 		$dom = new DOMDocument('1.0', 'utf8');
