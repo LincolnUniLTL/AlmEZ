@@ -7,8 +7,10 @@ _I like to pronounce it like a Mexican town, but just so you have options I capi
 Currently it works as advertised for us. However, I would say its ability to handle errors is undeveloped.
 
 ## Versions
-1.0-alpha1-20140721 used the old SOAP service for authentication
-1.1-alpha1-20150915 now uses the RESTful service throughout
+
+* 1.0-alpha1-20140721 uses the old SOAP service for authentication
+* 1.1-alpha1-20150915 uses the RESTful service throughout
+* 2.0-20150923 (based on 1.0) another RESTful implementation; uses HTTP PECL v2; adds new functionality: see release notes
 
 ## How it works
 
@@ -37,7 +39,7 @@ Public web service details are encoded in arrays in [the main script](index.php)
 
 You require just PHP on your server and these libraries:
 
-* [HTTP](http://php.net/manual/en/book.http.php)
+* [HTTP](http://php.net/manual/en/book.http.php) version 2
 * [XML/DOM](http://php.net/manual/en/book.dom.php)
 
 > You could extend this script to handle LDAP authentication as well if needed, though EZproxy also does that and seems to be well documented and proven. If you did that, you'd need [PHP's LDAP libraries](http://php.net/manual/en/book.ldap.php).
@@ -153,6 +155,7 @@ Thanks are due to:
 
 * OCLC for pretty good [documentation about EZproxy authentication](http://www.oclc.org/support/services/ezproxy/documentation/usr.en.html)
 * Ex Libris for providing Alma web services, moving them to REST, and for great responsive support
+* Library, Information Services, Flinders University for sharing (this version) 2.0
 
 Could not have pieced this solution together without being able to examine code generously shared on Github:
 

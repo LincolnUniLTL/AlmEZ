@@ -26,3 +26,12 @@ $authorisationGroups = array(
 	'Everyone+Alumni+Auto' => array('ALUM'),
 	'Everyone+Auto' => array('SP', 'TPU', 'RB', 'TAE', 'UA'),
 	);
+
+$ezproxyConfig = array(
+	'WillVerifyIp' => TRUE,		// TRUE: Verify EZproxy's IP address against "IpList" below. FALSE: Do not verify
+	'IpList' => array(		// EZproxy's IP address list
+		"111.111.111.111",
+		"127.0.0.1",
+		),
+	);
+?>
