@@ -1,10 +1,11 @@
-﻿#AlmEZ
+AlmEZ
+=====
 
 A way to authenticate and authorise "external" patrons with [EZproxy](http://www.oclc.org/support/services/ezproxy.en.html) using [Alma](https://developers.exlibrisgroup.com/alma).
 
 _I like to pronounce it like a Mexican town, but just so you have options I capitalised_ EZ.
 
-Currently it works as advertised for us. However, I would say its ability to handle errors is undeveloped.
+**NOTE:** As of PHP 7.2 it worked as advertised for us. (However, I would say its ability to handle errors is undeveloped.) It hasn't been tested in PHP 8.x. It's largely redundant now anyway as Alma have integrated similar functionality into their Cloud App Center called "EZproxy Auth Config".
 
 ## Versions
 
