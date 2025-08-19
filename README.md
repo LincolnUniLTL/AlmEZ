@@ -5,7 +5,7 @@ A way to authenticate and authorise "external" patrons with [EZproxy](http://www
 
 _I like to pronounce it like a Mexican town, but just so you have options I capitalised_ EZ.
 
-**NOTE:** The current version of AlmeEZ has been shown to work up to PHP 8.4.8. (However, its ability to handle errors is undeveloped.) It hasn't been tested in PHP 8.x. You may prefer to us Ex Libris' similar functionality in their Cloud App Center called "EZproxy Auth Config".
+**NOTE:** The current version of AlmeEZ has been shown to work up to PHP 8.4.8. (However, its ability to handle errors is undeveloped.) You may prefer to us Ex Libris' similar functionality in their Cloud App Center called "EZproxy Auth Config".
 
 ## Versions
 
